@@ -4,9 +4,6 @@ use crate::batteries::Urgency;
 const CHANGE_BRIGHTNESS_LEVEL: i8 = 80; // Use this to change just *-1 to dim it
 
 pub fn send_notif(level: i32, urgency : &Urgency ) {
-    println!("level {}", level);
-    println!("Urgency in send {}", urgency.as_str());
-
     Command::new("notify-send")
         // Urgency
         .arg("-u")

@@ -38,11 +38,6 @@ fn runner(dimmed: &mut bool, notified: &mut bool) -> Result<(), Box<dyn std::err
     let state = get_battery_state()?;
     let urgency = if battery_level <= LOW_BATTERY_THRESHOLD { Urgency::Low } else if battery_level >= FULL_BATTERY_THRESHOLD {Urgency::Full} else {Urgency::Normal};
 
-    println!("Battery {}", battery_level);
-    println!("state {}", state.as_str());
-    println!("urgency {}", urgency.as_str());
-
-
     if urgency == Urgency::Low && state == ChargingState::Discharging { // Low and not charging
         if !*notified {
             send_notif(battery_level, &urgency);
@@ -56,11 +51,9 @@ fn runner(dimmed: &mut bool, notified: &mut bool) -> Result<(), Box<dyn std::err
 
 
     } else if urgency == Urgency::Full && state == ChargingState::Charging {
-        println!("hit high");
         if !*notified {
             send_notif(battery_level, &urgency);
             *notified = true;
-            println!("hit notif");
         };
     }
 

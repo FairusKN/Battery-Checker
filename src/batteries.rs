@@ -63,7 +63,6 @@ pub fn get_battery_percentage() -> Result<i32, Box<dyn Error>> {
     let curr_cap : i32 = curr_cap.trim().parse()?;
 
     let percentage = (curr_cap as i64) * 100 / (full_cap as i64);
-    println!("percentage :{}", percentage);
 
     Ok(percentage as i32)
 }
