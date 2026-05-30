@@ -57,7 +57,7 @@ fn runner(dimmed: &mut bool, notified: &mut bool) -> Result<(), Box<dyn std::err
         };
     }
 
-    if urgency != Urgency::Low && *dimmed {
+    if state == ChargingState::Charging && *dimmed {
         change_brightness(false);
         *dimmed = false;
     }
@@ -72,8 +72,9 @@ fn runner(dimmed: &mut bool, notified: &mut bool) -> Result<(), Box<dyn std::err
 
 async fn is_event(socket: &mut AsyncMonitorSocket) -> io::Result<Event> {
     loop {
-        let _ = match socket.next().await {
+        match socket.next().await {
             Some(res) => {
+                println!("event here");
                 return res
             },
             None => {
