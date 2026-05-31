@@ -9,7 +9,7 @@ use subprocessing::{send_notif, change_brightness};
 mod batteries;
 mod subprocessing;
 
-const LOW_BATTERY_THRESHOLD: i32 = 80;
+const LOW_BATTERY_THRESHOLD: i32 = 20;
 const FULL_BATTERY_THRESHOLD: i32 = 98;
 
 #[tokio::main(flavor = "current_thread")]
