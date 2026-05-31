@@ -9,7 +9,7 @@ use subprocessing::{send_notif, change_brightness};
 mod batteries;
 mod subprocessing;
 
-const LOW_BATTERY_THRESHOLD: i32 = 20;
+const LOW_BATTERY_THRESHOLD: i32 = 80;
 const FULL_BATTERY_THRESHOLD: i32 = 98;
 
 #[tokio::main(flavor = "current_thread")]
@@ -25,10 +25,16 @@ async fn main() -> io::Result<()> {
     println!("Watching Batteries");
 
     loop {
-        let res = is_event(&mut socket).await;
+        tokio::select!{
+            Some(res) = socket.next() => {
+                if res.is_ok() {
+                    let _ = runner(&mut dimmed, &mut notified);
+                }
+            }
 
-        if let Ok(_) = res {
-            let _ = runner(&mut dimmed, &mut notified);
+            _ = sleep(Duration::from_secs(30)) => {
+                let _ = runner(&mut dimmed, &mut notified);
+            }
         }
     }
 }
@@ -69,21 +75,3 @@ fn runner(dimmed: &mut bool, notified: &mut bool) -> Result<(), Box<dyn std::err
     Ok(())
 
 }
-
-async fn is_event(socket: &mut AsyncMonitorSocket) -> io::Result<Event> {
-    loop {
-        match socket.next().await {
-            Some(res) => {
-                println!("event here");
-                return res
-            },
-            None => {
-                sleep(Duration::from_millis(100)).await;
-                continue;
-            }
-        };
-
-    }
-
-}
-
