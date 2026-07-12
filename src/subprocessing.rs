@@ -1,8 +1,6 @@
 use std::process::Command;
 use crate::batteries::Urgency;
 
-const CHANGE_BRIGHTNESS_LEVEL: i8 = 80; // Use this to change just *-1 to dim it
-
 pub fn send_notif(level: i32, urgency : &Urgency ) {
     Command::new("notify-send")
         // Urgency
@@ -25,14 +23,9 @@ pub fn send_notif(level: i32, urgency : &Urgency ) {
 }
 
 pub fn change_brightness(dim: bool) {
-    // Sub Process will make smth like  `swayosd-client --brightness=+80`
-    Command::new("swayosd-client")
-        .arg("--brightness")
-        .arg(format!(
-            "{}{}",
-            if dim { "-" } else { "+" },
-            CHANGE_BRIGHTNESS_LEVEL
-        ))
+    Command::new("brightnessctl")
+        .arg("s")
+        .arg(if dim { "10%" } else { "90%" })
         .spawn()
-        .expect("Failed to change brightness level");
+        .expect("Failed to change brightness");
 }
